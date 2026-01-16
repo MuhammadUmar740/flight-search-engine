@@ -7,7 +7,6 @@ export default function Home() {
       <Header />
       <div className="container p-5 mx-auto">
         <SearchFlight />
-        <div className="h-screen"></div>
       </div>
     </>
   );

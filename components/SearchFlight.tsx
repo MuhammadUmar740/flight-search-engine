@@ -3,6 +3,7 @@ import React, { FormEvent } from "react";
 import CitySearch from "./CitySearch";
 import { fetchFlights, IFlightResponse } from "@/app/api/flights-search";
 import FlightRecords from "./FlightRecords";
+import Chart from "./Chart";
 
 const SearchFlight = () => {
   const [params, setParams] = React.useState({
@@ -13,7 +14,35 @@ const SearchFlight = () => {
   });
   const [isLoading, setIsLoading] = React.useState(false);
   const [flightsData, setFlightsData] = React.useState<IFlightResponse>();
-  console.log(flightsData);
+
+  const [sortBy, setSortBy] = React.useState<"price" | "airline" | null>(null);
+  const [sortDir, setSortDir] = React.useState<"asc" | "desc">("asc");
+
+  const sortedFlights: IFlightResponse | undefined = React.useMemo(() => {
+    if (!flightsData?.data) return undefined;
+
+    const data = [...flightsData.data];
+
+    if (sortBy === "price") {
+      data.sort((a, b) =>
+        sortDir === "asc"
+          ? Number(a.price.total) - Number(b.price.total)
+          : Number(b.price.total) - Number(a.price.total)
+      );
+    }
+
+    if (sortBy === "airline") {
+      data.sort((a, b) => {
+        const aName = a.validatingAirlineCodes?.[0] ?? "";
+        const bName = b.validatingAirlineCodes?.[0] ?? "";
+        return sortDir === "asc"
+          ? aName.localeCompare(bName)
+          : bName.localeCompare(aName);
+      });
+    }
+
+    return { data, dictionaries: flightsData?.dictionaries };
+  }, [flightsData, sortBy, sortDir]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -67,13 +96,54 @@ const SearchFlight = () => {
           />
           <button
             type="submit"
-            className="bg-secondary text-white rounded-lg px-3 py-2 cursor-pointer"
+            className="bg-secondary text-white rounded-lg px-3 py-2 cursor-pointer disabled:cursor-not-allowed"
+            disabled={isLoading}
           >
             Search Flights
           </button>
         </form>
       </div>
-      <FlightRecords flights={flightsData} isLoading={isLoading} />
+      <div className="flex w-full justify-end gap-5 pt-10 pb-5">
+        <button
+          className="px-3 py-1.5 bg-secondary text-white rounded-lg disabled:cursor-not-allowed cursor-pointer"
+          disabled={!sortedFlights?.data?.length || isLoading}
+          onClick={() => {
+            setSortBy("price");
+            setSortDir((prev) =>
+              sortBy === "price" ? (prev === "asc" ? "desc" : "asc") : "asc"
+            );
+          }}
+        >
+          Sort By Price {sortBy === "price" && (sortDir === "asc" ? "↑" : "↓")}
+        </button>
+
+        <button
+          className="px-3 py-1.5 bg-secondary text-white rounded-lg disabled:cursor-not-allowed cursor-pointer"
+          disabled={!sortedFlights?.data?.length || isLoading}
+          onClick={() => {
+            setSortBy("airline");
+            setSortDir((prev) =>
+              sortBy === "airline" ? (prev === "asc" ? "desc" : "asc") : "asc"
+            );
+          }}
+        >
+          Sort By Airline{" "}
+          {sortBy === "airline" && (sortDir === "asc" ? "↑" : "↓")}
+        </button>
+      </div>
+      <FlightRecords flights={sortedFlights} isLoading={isLoading} />
+      <Chart
+        isLoading={isLoading}
+        data={
+          sortedFlights?.data?.map((flight) => ({
+            airline:
+              sortedFlights?.dictionaries?.carriers?.[
+                flight?.validatingAirlineCodes?.[0]
+              ],
+            price: Number(flight?.price?.total) || 0,
+          })) || []
+        }
+      />
     </>
   );
 };

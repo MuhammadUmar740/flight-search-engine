@@ -9,14 +9,14 @@ const FlightRecords = ({
 }) => {
   return (
     <div className="w-full overflow-x-auto">
-      <table className="table-auto w-full border border-gray-300 mt-10 whitespace-nowrap">
+      <table className="table-auto w-full border border-gray-300 whitespace-nowrap">
         <thead className="bg-secondary text-white">
           <tr>
             <th className="px-6 py-2">ID</th>
             <th className="px-6 py-2">Last Booking Date</th>
             <th className="px-6 py-2">Seats Available</th>
             <th className="px-6 py-2">Price</th>
-            <th className="px-6 py-2">Carrier</th>
+            <th className="px-6 py-2">Airline</th>
           </tr>
         </thead>
         <tbody className="min-h-[50dvh]">

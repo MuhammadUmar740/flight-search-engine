@@ -32,7 +32,7 @@ export async function fetchFlights(
     returnDate: payload.returnDate,
     adults: "1",
     currencyCode: "USD",
-    max: "20",
+    max: "10",
   });
 
   const res = await apiClient.get<IFlightResponse>(
