@@ -4,15 +4,16 @@ import React from "react";
 
 const Header = () => {
   return (
-    <section className="relative h-dvh md:h-175 xl:h-screen overflow-hidden flex items-start md:items-center">
+    <section className="relative overflow-hidden">
       <Image
         width={1500}
         height={1200}
         src={BgImage}
         alt="travel around globe"
-        className="absolute -right-[20%] md:-right-1/4 -bottom-[10%] md:top-0 size-4/5 md:size-full object-cover md:rotate-0 rotate-25"
+        className="absolute -right-[20%] md:-right-1/4 top-0 size-full object-contain"
       />
-      <div className="container p-5 mx-auto font-bold text-secondary relative py-20">
+      <div className="size-full bg-white/50 top-0 left-0 absolute md:hidden" />
+      <div className="container p-5 mx-auto font-bold text-secondary relative py-20 2xl:py-40">
         <h1 className="text-primary text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl mb-5 font-creepster">
           Search Flights <br /> Around the Globe
         </h1>
