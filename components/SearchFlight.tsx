@@ -55,7 +55,7 @@ const SearchFlight = () => {
   return (
     <>
       <h1 className="text-4xl md:text-5xl xl:text-6xl font-bebas font-bold text-center py-10">
-        Flights
+        Search Flights
       </h1>
       <div className="bg-white shadow-2xl rounded-lg p-5">
         <form onSubmit={handleSubmit} className="flex gap-2 flex-wrap">
