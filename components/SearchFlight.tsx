@@ -13,7 +13,9 @@ const SearchFlight = () => {
     returnDate: "",
   });
   const [isLoading, setIsLoading] = React.useState(false);
-  const [flightsData, setFlightsData] = React.useState<IFlightResponse>();
+  const [flightsData, setFlightsData] = React.useState<IFlightResponse | null>(
+    null
+  );
 
   const [sortBy, setSortBy] = React.useState<"price" | "airline" | null>(null);
   const [sortDir, setSortDir] = React.useState<"asc" | "desc">("asc");
@@ -103,35 +105,44 @@ const SearchFlight = () => {
           </button>
         </form>
       </div>
-      <div className="flex w-full justify-end gap-5 pt-10 pb-5">
-        <button
-          className="px-3 py-1.5 bg-secondary text-white rounded-lg disabled:cursor-not-allowed cursor-pointer"
-          disabled={!sortedFlights?.data?.length || isLoading}
-          onClick={() => {
-            setSortBy("price");
-            setSortDir((prev) =>
-              sortBy === "price" ? (prev === "asc" ? "desc" : "asc") : "asc"
-            );
-          }}
-        >
-          Sort By Price {sortBy === "price" && (sortDir === "asc" ? "↑" : "↓")}
-        </button>
+      {flightsData === null ? null : (
+        <>
+          <div className="flex w-full justify-end gap-5 pt-10 pb-5">
+            <button
+              className="px-3 py-1.5 bg-secondary text-white rounded-lg disabled:cursor-not-allowed cursor-pointer"
+              disabled={!sortedFlights?.data?.length || isLoading}
+              onClick={() => {
+                setSortBy("price");
+                setSortDir((prev) =>
+                  sortBy === "price" ? (prev === "asc" ? "desc" : "asc") : "asc"
+                );
+              }}
+            >
+              Sort By Price{" "}
+              {sortBy === "price" && (sortDir === "asc" ? "↑" : "↓")}
+            </button>
 
-        <button
-          className="px-3 py-1.5 bg-secondary text-white rounded-lg disabled:cursor-not-allowed cursor-pointer"
-          disabled={!sortedFlights?.data?.length || isLoading}
-          onClick={() => {
-            setSortBy("airline");
-            setSortDir((prev) =>
-              sortBy === "airline" ? (prev === "asc" ? "desc" : "asc") : "asc"
-            );
-          }}
-        >
-          Sort By Airline{" "}
-          {sortBy === "airline" && (sortDir === "asc" ? "↑" : "↓")}
-        </button>
-      </div>
-      <FlightRecords flights={sortedFlights} isLoading={isLoading} />
+            <button
+              className="px-3 py-1.5 bg-secondary text-white rounded-lg disabled:cursor-not-allowed cursor-pointer"
+              disabled={!sortedFlights?.data?.length || isLoading}
+              onClick={() => {
+                setSortBy("airline");
+                setSortDir((prev) =>
+                  sortBy === "airline"
+                    ? prev === "asc"
+                      ? "desc"
+                      : "asc"
+                    : "asc"
+                );
+              }}
+            >
+              Sort By Airline{" "}
+              {sortBy === "airline" && (sortDir === "asc" ? "↑" : "↓")}
+            </button>
+          </div>
+          <FlightRecords flights={sortedFlights} isLoading={isLoading} />
+        </>
+      )}
       <Chart
         isLoading={isLoading}
         data={
